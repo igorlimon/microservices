@@ -20,9 +20,4 @@
     <ProjectReference Include="..\Course.Common\Course.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>

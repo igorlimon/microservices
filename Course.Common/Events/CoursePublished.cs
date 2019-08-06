@@ -3,7 +3,7 @@
 namespace Course.Common.Events
 {
     [Serializable()]
-    public class CoursePublished : IAuthenticatedEvent
+    public class CoursePublished : IEvent
     {
         public Guid CourseId { get; }
         public Guid UserId { get; }

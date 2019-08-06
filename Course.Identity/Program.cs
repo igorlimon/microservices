@@ -1,4 +1,5 @@
-﻿using Course.Common.Events;
+﻿using Course.Common.Commands;
+using Course.Common.Events;
 using Course.Common.Services;
 
 namespace Course.Identity
@@ -9,7 +10,9 @@ namespace Course.Identity
         {
             ServiceHost.Create<Startup>(args)
                 .UseRabbitMq()
-                //.SubscribeToEvent<UserRegistredToCourse>()
+                .SubscribeToCommand<RegisterUserToCourse>()
+                .SubscribeToEvent<FeedbackSaved>()
+                .SubscribeToEvent<FeedbackFormReceived>()
                 .Build()
                 .Run();
         }

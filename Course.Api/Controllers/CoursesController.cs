@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Course.Common.Commands;
 using Course.Common.Events;
 using Course.Common.RabbitMq;
@@ -20,16 +20,30 @@ namespace Course.Api.Controllers
         }
 
         [HttpPost("Publish")]
-        public async Task<IActionResult> Publish(Guid courseId)
+        public IActionResult Publish([FromQuery]Guid courseId)
         {
-            var coursePublished = new CoursePublished(courseId, Guid.NewGuid());
+            var userId = Guid.NewGuid(); // will be extracted from  Guid.Parse(User.Identity.Name) when authentication will be implemented
+            var coursePublished = new PublishCourse(courseId, userId);
             byte[] body = coursePublished.ObjectToByteArray();
             _model.BasicPublish(exchange: "",
-                routingKey: Extensions.GetQueueName<CoursePublished>(),
+                routingKey: Extensions.GetCommandQueueName<PublishCourse>(),
                 basicProperties: null,
                 body: body);
 
-            return Accepted($"courses/{courseId}");
+            return Ok();
+        }
+
+        [HttpPost("Complete")]
+        public IActionResult Complete([FromQuery]Guid courseId, [FromQuery]Guid userId)
+        {
+            var completeCourse = new CompleteCourse(courseId, userId);
+            byte[] body = completeCourse.ObjectToByteArray();
+            _model.BasicPublish(exchange: "",
+                routingKey: Extensions.GetCommandQueueName<CompleteCourse>(),
+                basicProperties: null,
+                body: body);
+
+            return Ok();
         }
     }
 }

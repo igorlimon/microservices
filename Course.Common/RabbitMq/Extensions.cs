@@ -16,7 +16,7 @@ namespace Course.Common.RabbitMq
         public static void WithCommandHandlerAsync<TCommand>(this IModel channel,
             ICommandHandler<TCommand> handler) where TCommand : ICommand
         {
-            channel.QueueDeclare(queue: GetQueueName<TCommand>(),
+            channel.QueueDeclare(queue: GetCommandQueueName<TCommand>(),
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
@@ -29,7 +29,7 @@ namespace Course.Common.RabbitMq
                 var command = (TCommand) body.ByteArrayToObject();
                 handler.HandleAsync(command);
             };
-            channel.BasicConsume(queue: GetQueueName<TCommand>(),
+            channel.BasicConsume(queue: GetCommandQueueName<TCommand>(),
                 autoAck: true,
                 consumer: consumer);
         }
@@ -37,7 +37,7 @@ namespace Course.Common.RabbitMq
         public static void WithEventHandlerAsync<TEvent>(this IModel channel,
             IEventHandler<TEvent> handler) where TEvent : IEvent
         {
-            channel.QueueDeclare(queue: GetQueueName<TEvent>(),
+            channel.QueueDeclare(queue: GetEventQueueName<TEvent>(),
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
@@ -50,7 +50,7 @@ namespace Course.Common.RabbitMq
                 var @event = (TEvent)body.ByteArrayToObject();
                 handler.HandleAsync(@event);
             };
-            channel.BasicConsume(queue: GetQueueName<TEvent>(),
+            channel.BasicConsume(queue: GetEventQueueName<TEvent>(),
                 autoAck: true,
                 consumer: consumer);
         }
@@ -67,8 +67,11 @@ namespace Course.Common.RabbitMq
             services.AddSingleton<IModel>(_ => channel);
         }
 
-        public static string GetQueueName<T>()
-            => $"{Constants.QueueRootName}/{typeof(T).Name}";
+        public static string GetCommandQueueName<TCommand>() where TCommand : ICommand
+            => $"{Constants.QueueRootName}/Command/{typeof(TCommand).Name}";
+
+        public static string GetEventQueueName<TEvent>() where TEvent : IEvent
+            => $"{Constants.QueueRootName}/Event/{typeof(TEvent).Name}";
 
         public static byte[] ObjectToByteArray(this Object obj)
         {

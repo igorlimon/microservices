@@ -1,7 +1,8 @@
-﻿using Course.Common.Auth;
+﻿using Course.Common.Commands;
 using Course.Common.Events;
 using Course.Common.Mongo;
 using Course.Common.RabbitMq;
+using Course.Feedback.Handlers;
 using Course.Notification.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,10 +24,11 @@ namespace Course.Notification
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddJwt(Configuration);
+            services.AddLogging();
             services.AddRabbitMq(Configuration);
             services.AddMongoDB(Configuration);
             services.AddSingleton<IEventHandler<CoursePublished>, CoursePublishedHandler>();
+            services.AddSingleton<ICommandHandler<SendFeedbackForm>, SendFeedbackFormHandler>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -37,13 +39,7 @@ namespace Course.Notification
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
+            app.ApplicationServices.GetService<IDatabaseInitializer>().InitializeAsync();
             app.UseMvc();
         }
     }

@@ -6,11 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Controllers\HomeController.cs~RF67b641b9.TMP" />
-    <None Remove="Handlers\CoursePublishedHandler.cs~RF67667a04.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="RawRabbit" Version="1.10.4" />

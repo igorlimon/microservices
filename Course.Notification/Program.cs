@@ -1,4 +1,5 @@
-﻿using Course.Common.Events;
+﻿using Course.Common.Commands;
+using Course.Common.Events;
 using Course.Common.Services;
 
 namespace Course.Notification
@@ -10,6 +11,7 @@ namespace Course.Notification
             ServiceHost.Create<Startup>(args)
                 .UseRabbitMq()
                 .SubscribeToEvent<CoursePublished>()
+                .SubscribeToCommand<SendFeedbackForm>()
                 .Build()
                 .Run();
         }

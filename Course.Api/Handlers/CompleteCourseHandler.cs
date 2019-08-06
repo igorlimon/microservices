@@ -7,26 +7,26 @@ using System.Threading.Tasks;
 
 namespace Course.Api.Handlers
 {
-    public class PublishCourseHandler : ICommandHandler<PublishCourse>
+    public class CompleteCourseHandler : ICommandHandler<CompleteCourse>
     {
-        private readonly ILogger<PublishCourse> _logger;
+        private readonly ILogger<CompleteCourse> _logger;
         private readonly IModel _channel;
 
-        public PublishCourseHandler(
+        public CompleteCourseHandler(
             IModel channel,
-            ILogger<PublishCourse> logger)
+            ILogger<CompleteCourse> logger)
         {
             _channel = channel;
             _logger = logger;
         }
 
-        public async Task HandleAsync(PublishCourse command)
+        public async Task HandleAsync(CompleteCourse command)
         {
             _logger.LogInformation($"############ BEGIN ##############");
-            _logger.LogInformation($"1. Publish course: {command.CourseId}");
-            var @event = new CoursePublished(command.CourseId, command.UserId);
+            _logger.LogInformation($"1. Complete course: {command.CourseId}");
+            var @event = new CourseCompleted(command.CourseId, command.UserId);
             _channel.BasicPublish(exchange: "",
-                routingKey: Extensions.GetEventQueueName<CoursePublished>(),
+                routingKey: Extensions.GetEventQueueName<CourseCompleted>(),
                 basicProperties: null,
                 body: @event.ObjectToByteArray());
         }

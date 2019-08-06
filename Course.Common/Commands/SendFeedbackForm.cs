@@ -3,16 +3,16 @@ using System;
 namespace Course.Common.Commands
 {
     [Serializable()]
-    public class PublishCourse : ICommand
+    public class SendFeedbackForm : ICommand
     {
         public Guid CourseId { get; set; }
         public Guid UserId { get; set; }
 
-        protected PublishCourse()
+        protected SendFeedbackForm()
         {
         }
 
-        public PublishCourse(Guid courseId, Guid userId)
+        public SendFeedbackForm(Guid courseId, Guid userId)
         {
             CourseId = courseId;
             UserId = userId;

@@ -1,8 +1,9 @@
-using System.Threading.Tasks;
+using Course.Common.Commands;
 using Course.Common.Events;
 using Course.Common.RabbitMq;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using System.Threading.Tasks;
 
 namespace Course.Notification.Handlers
 {
@@ -19,17 +20,14 @@ namespace Course.Notification.Handlers
             _logger = logger;
         }
 
-        public async Task HandleAsync(CoursePublished course)
+        public async Task HandleAsync(CoursePublished @event)
         {
-            using (_logger.BeginScope($"Registration notification {course.CourseId}"))
-            {
-                _logger.LogInformation($"Registration for course: {course.CourseId}");
-            }
-            //var publishedCourse = new CoursePublished(course.CourseId, course.UserId);
-            //_channel.BasicPublish(exchange: "",
-            //    routingKey: nameof(CoursePublished),
-            //    basicProperties: null,
-            //    body: publishedCourse.ObjectToByteArray());
+            _logger.LogInformation($"2. Course published: {@event.CourseId}");
+            var command = new RegisterUserToCourse(@event.CourseId, @event.UserId);
+            _channel.BasicPublish(exchange: "",
+                routingKey: Extensions.GetCommandQueueName<RegisterUserToCourse>(),
+                basicProperties: null,
+                body: command.ObjectToByteArray());
         }
     }
 }

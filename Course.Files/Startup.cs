@@ -1,16 +1,21 @@
-﻿using Course.Common.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Course.Common.Commands;
 using Course.Common.Events;
 using Course.Common.Mongo;
 using Course.Common.RabbitMq;
-using Course.Feedback.Handlers;
-using Course.Notification.Handlers;
+using Course.Files.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace Course.Notification
+namespace Course.Files
 {
     public class Startup
     {
@@ -26,10 +31,7 @@ namespace Course.Notification
         {
             services.AddLogging();
             services.AddRabbitMq(Configuration);
-            services.AddMongoDB(Configuration);
-            services.AddSingleton<IEventHandler<CoursePublished>, CoursePublishedHandler>(); 
-            services.AddSingleton<IEventHandler<MaterialsReceived>, MaterialsReceivedHandler>();
-            services.AddSingleton<ICommandHandler<SendFeedbackForm>, SendFeedbackFormHandler>();
+            services.AddSingleton<IEventHandler<FeedbackSaved>, FeedbackSavedHandler>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -40,7 +42,6 @@ namespace Course.Notification
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.ApplicationServices.GetService<IDatabaseInitializer>().InitializeAsync();
             app.UseMvc();
         }
     }

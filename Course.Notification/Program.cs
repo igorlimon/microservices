@@ -11,6 +11,7 @@ namespace Course.Notification
             ServiceHost.Create<Startup>(args)
                 .UseRabbitMq()
                 .SubscribeToEvent<CoursePublished>()
+                .SubscribeToEvent<MaterialsReceived>()
                 .SubscribeToCommand<SendFeedbackForm>()
                 .Build()
                 .Run();

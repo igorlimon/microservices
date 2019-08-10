@@ -30,6 +30,7 @@ namespace Course.Identity
             services.AddMongoDB(Configuration);
             services.AddRabbitMq(Configuration);
             services.AddSingleton<ICommandHandler<RegisterUserToCourse>, RegisterUserToCourseHandler>();
+            services.AddSingleton<ICommandHandler<SendMaterials>, SendMaterialsHandler>();
             services.AddSingleton<IEventHandler<FeedbackFormReceived>, FeedbackFormReceivedHandler>();
             services.AddSingleton<IEventHandler<FeedbackSaved>, FeedbackSavedHandler>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
